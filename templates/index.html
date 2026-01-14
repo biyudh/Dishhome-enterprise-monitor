@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Monitoring Dashboard</title>
+    <style>
+        body { font-family: Arial; padding: 20px; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 10px; border: 1px solid #ccc; text-align: center; }
+        .up { background-color: #c9ffc9; }
+        .down { background-color: #ffbcbc; }
+    </style>
+</head>
+<body>
+    <h2>Enterprise Monitoring Dashboard (Basic Test)</h2>
+
+    <table id="statusTable">
+        <thead>
+            <tr>
+                <th>Branch</th>
+                <th>IP Address</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <script>
+        function loadStatus() {
+            fetch("/api/status")
+                .then(res => res.json())
+                .then(data => {
+                    const tbody = document.querySelector("#statusTable tbody");
+                    tbody.innerHTML = "";
+
+                    data.forEach(item => {
+                        const row = document.createElement("tr");
+                        row.className = item.status.toLowerCase();
+
+                        row.innerHTML = `
+                            <td>${item.branch}</td>
+                            <td>${item.ip}</td>
+                            <td>${item.status}</td>
+                        `;
+                        tbody.appendChild(row);
+                    });
+                });
+        }
+
+        loadStatus();
+        setInterval(loadStatus, 5000);  // refresh every 5 seconds
+    </script>
+
+</body>
+</html>
